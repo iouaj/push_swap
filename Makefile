@@ -1,46 +1,42 @@
 NAME = push_swap
 
 CC = cc
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Wextra -Werror
 
-FILES =	pile \
-		action \
-		push_swap \
-		lowerfirst
+FILES =	push_swap.c \
+		stack.c \
+		movement.c \
+		sort.c \
+		utils.c \
+		repush.c \
+		test.c \
+		target.c
 
-SRC = $(addsuffix .c, $(FILES))
-OBJ = $(addsuffix .o, $(FILES))
+PATH_FILES = srcs/
 
-FILES_LIB = libpush/ft_atoi \
-			libpush/ft_putendl_fd
+SRC = $(addprefix $(PATH_FILES), $(FILES))
 
-SRC_LIB = $(addsuffix .c, $(FILES_LIB))
-OBJ_LIB = $(addsuffix .o, $(FILES_LIB))
+OBJS = $(SRC:.c=.o)
 
-FT_PRINTF = libpush/ft_printf/
-LIB = libpush.a
-INCLUDES = push_swap.h
+INCLUDES = includes/push_swap.h
 
-all: $(NAME)
+FT_PRINTF_PATH = srcs/ft_printf
+FT_PRINTF = libftprintf.a
 
-$(LIB) : $(OBJ_LIB)
-	@make -C $(FT_PRINTF)
-	@cp $(FT_PRINTF)/libftprintf.a .
-	@mv libftprintf.a $(LIB)
-	@ar rc $(LIB) $(OBJ_LIB)
+all : $(NAME)
 
-$(NAME) : $(OBJ) $(LIB)
-	$(CC) $(CFLAGS) $(OBJ) $(LIB) -I $(INCLUDES) -o $(NAME)
+$(NAME): $(OBJS)
+	make -C $(FT_PRINTF_PATH)
+	$(CC) $(CFLAGS) $(OBJS) $(FT_PRINTF_PATH)/$(FT_PRINTF) -I $(INCLUDES) -o $(NAME)
 
-clean :
-	@rm -f $(OBJ)
-	@rm -f $(OBJ_LIB)
-	@rm -f $(LIB)
-	@make fclean -C $(FT_PRINTF)
+clean:
+	make fclean -C $(FT_PRINTF_PATH)
+	rm -f $(OBJS)
 
-fclean : clean
-	@rm -f $(NAME)
+fclean: clean
+	rm -f $(NAME)
 
-re : fclean all
+re : fclean
+	make all
 
-.PHONY: all clean fclean re
+.PHONY : all clean fclean re
